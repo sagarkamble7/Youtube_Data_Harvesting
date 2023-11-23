@@ -563,6 +563,7 @@ elif show_table == 'COMMENTS':
 
 
 #SQL connection:
+
 mydb = psycopg2.connect(host = 'localhost',
                         user = 'postgres',
                         password = '$@gaR72427',
@@ -581,6 +582,110 @@ question=st.selectbox('Select your Question',('1. All the videos and the channel
                                               '8. videos published in the year of 2022',
                                               '9. Average duration of videos in each channel',
                                               '10. videos with highest number of comment'))
+
+
+if question=='1. All the videos and the channel':
+    query1 = '''select title as videos,channel_name as channelname from videos '''
+    cursor.execute(query1)
+    mydb.commit()
+    t1 = cursor.fetchall()
+    df1 = pd.DataFrame(t1,columns = ['video title','channel name'])
+    st.write(df1)
+
+
+elif question=='2. Channels with most number of videos':
+    query2 = '''select channel_name as channelname, total_videos as no_videos from channels
+                order by total_videos desc'''
+    cursor.execute(query2)
+    mydb.commit()
+    t2 = cursor.fetchall()
+    df2 = pd.DataFrame(t2,columns = ['channel name','No of videos'])
+    st.write(df2)
+
+
+elif question=='3. 10 most viewd videos':
+    query3 = '''select views as views, channel_name as channelname,title as videotitle from videos
+                where views is not null order by views desc limit 10'''
+    cursor.execute(query3)
+    mydb.commit()
+    t3 = cursor.fetchall()
+    df3 = pd.DataFrame(t3,columns = ['views','channel name','videotitle'])
+    st.write(df3)
+
+elif question=='comments in each videos':
+    query4 = '''select comment_counts as no_comments, title as videotitle from videos where comment_counts is not null'''
+    cursor.execute(query4)
+    mydb.commit()
+    t4 = cursor.fetchall()
+    df4 = pd.DataFrame(t4,columns = ['no of comments','videotitle'])
+    st.write(df4)
+
+
+elif question=='5. videos with highest likes':
+    query5 = '''select title as videotitle,channel_name as channelname, Likes as likescount
+                from videos where likes is not null order by likes desc'''
+    cursor.execute(query5)
+    mydb.commit()
+    t5 = cursor.fetchall()
+    df5 = pd.DataFrame(t5,columns = ['videotitle','channelname','likecount'])
+    st.write(df5)
+
+
+elif question=='6. likes of all videos':
+    query6 = '''select likes as likecount, title as videotitle from videos '''
+    cursor.execute(query6)
+    mydb.commit()
+    t6 = cursor.fetchall()
+    df6 = pd.DataFrame(t6,columns = ['likecount','videotitle'])
+    st.write(df6)
+
+
+elif question=='7. views of each channel':
+    query7 = '''select channel_name as channelname, views as totalviews from channels '''
+    cursor.execute(query7)
+    mydb.commit()
+    t7 = cursor.fetchall()
+    df7 = pd.DataFrame(t7,columns = ['channel name','total views'])
+    st.write(df7)
+
+
+elif question== '8. videos published in the year of 2022':
+    query8 = '''select title as video_title, Published_date as publish, channel_name as channelname from videos
+                where extract (year from Published_date) = 2022'''
+    cursor.execute(query8)
+    mydb.commit()
+    t8 = cursor.fetchall()
+    df8 = pd.DataFrame(t8,columns = ['viedo title','published','channel name'])
+    st.write(df8)
+
+
+elif question== '9. Average duration of videos in each channel':
+    query9 = '''select channel_name as channelname, avg(duration) as average_duration
+                from videos group by channel_name'''
+    cursor.execute(query9)
+    mydb.commit()
+    t9 = cursor.fetchall()
+    df9 = pd.DataFrame(t9,columns = ['channel name','average duration'])
+    df9
+
+    T9 = []
+    for index,row in df9.iterrows():
+        channel_title = row['channel name']
+        average_duration = row['average duration']
+        average_duration_str = str(average_duration)
+        T9.append(dict(channeltitle = channel_title,avgduration =average_duration_str ))
+    df9 = pd.DataFrame(T9)
+    st.write(df9)
+
+
+elif question== '10. videos with highest number of comment':
+    query10 = '''select title as videotitle, channel_name as channelname, comment_counts as comments from videos
+                    where comment_counts is not null order by comment_counts'''
+    cursor.execute(query10)
+    mydb.commit()
+    t10 = cursor.fetchall()
+    df10 = pd.DataFrame(t10,columns = ['video title','channel name','comments'])
+    st.write(df10)
 
 
 
